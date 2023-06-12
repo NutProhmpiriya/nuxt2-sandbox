@@ -86,6 +86,12 @@ export default Vue.extend({
         }
     },
 
+    computed: {
+        user() {
+            return this.$store.getters['auth/user']
+        },
+    },
+
     mounted() {
         this.findManyPost()
     },
@@ -95,12 +101,10 @@ export default Vue.extend({
             try {
                 e.preventDefault()
                 const h = this.$createElement
-                const getUser = localStorage.getItem('user')
-                const user = getUser ? JSON.parse(getUser) : null
 
                 const bodyData = {
                     post: this.formCreate.content,
-                    owner: user.uid,
+                    owner: this.user.uid,
                 }
 
                 const { instanceDB, fireStore } = this.$fireV9

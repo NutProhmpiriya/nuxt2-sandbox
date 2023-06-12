@@ -35,12 +35,12 @@ export default Vue.extend({
     },
     watch: {
         section() {
-            this.$router.replace({ query: { section: this.section } })
+            this.$router.replace({ query: { section: this.section } }).catch(() => {})
         },
     },
     created() {
         if (!this.$route.query.section) {
-            this.$router.replace({ query: { section: this.section } })
+            this.$router.replace({ query: { section: this.section } }).catch(() => {})
             return
         }
         this.section = (this.$route.query.section as string) || 'fireAuth'

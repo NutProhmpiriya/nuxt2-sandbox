@@ -84,6 +84,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { UserCredential } from 'firebase/auth'
+
+export interface FirebaseSignInRespone {
+    data: null | UserCredential
+    error: null | any
+}
 
 export default Vue.extend({
     name: 'FireAuthManual',
@@ -113,10 +119,6 @@ export default Vue.extend({
     },
 
     methods: {
-        signIn(value: string) {
-            alert(value)
-        },
-
         signinWithPopup(providerSignIn: string) {
             this.clearResult()
             const { signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } = this.$fireV9.fireAuth
@@ -135,7 +137,7 @@ export default Vue.extend({
                 .then((result) => {
                     this.resultSignIn = JSON.stringify(result, null, 2)
                     this.currentUser = JSON.stringify(this.$fireV9.instanceAuth.currentUser, null, 2)
-                    this.setUidUser()
+                    this.setUserInfo()
                 })
                 .catch((error) => {
                     this.reusltSigninError = JSON.stringify(error, null, 2)
@@ -157,24 +159,31 @@ export default Vue.extend({
             signInWithRedirect(this.$fireV9.instanceAuth, providerAuth)
         },
 
-        getResultSignInWithRedirect(status: string) {
+        async getResultSignInWithRedirect(status: string) {
             this.isLoadingResult = true
 
             const { getRedirectResult } = this.$fireV9.fireAuth
-            getRedirectResult(this.$fireV9.instanceAuth)
+            const result = await getRedirectResult(this.$fireV9.instanceAuth)
                 .then((result) => {
-                    if (!result) return
+                    if (!result) return { data: null, error: 'result emplty' }
                     this.resultSignIn = JSON.stringify({ result, status }, null, 2)
                     this.currentUser = JSON.stringify(this.$fireV9.instanceAuth.currentUser, null, 2)
-                    this.setUidUser()
+                    this.setUserInfo()
+                    return { data: result, error: null }
                 })
                 .catch((error) => {
                     this.reusltSigninError = JSON.stringify({ error, status }, null, 2)
+                    return { data: null, error }
                 })
                 .finally(() => {
                     this.isLoadingResult = false
                     this.providerSignIn = ''
                 })
+            if (result.error) {
+                this.reusltSigninError = JSON.stringify(result.error, null, 2)
+            } else {
+                this.resultSignIn = JSON.stringify(result.data, null, 2)
+            }
         },
 
         signupWithEmailAndPassword() {
@@ -301,9 +310,11 @@ export default Vue.extend({
             this.currentUser = ''
         },
 
-        setUidUser() {
+        async setUserInfo() {
             if (this.$fireV9.instanceAuth.currentUser) {
-                localStorage.setItem('user', JSON.stringify(this.$fireV9.instanceAuth.currentUser))
+                const idToken = await this.$fireV9.instanceAuth.currentUser.getIdToken()
+                console.log('idToken', idToken)
+                this.$store.dispatch('auth/setUser', this.$fireV9.instanceAuth.currentUser)
             }
         },
     },

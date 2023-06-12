@@ -13,7 +13,6 @@ export default {
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-            // <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
             {
                 rel: 'stylesheet',
                 href: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
@@ -22,8 +21,6 @@ export default {
             }
         ],
         script: [
-//             <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-// <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
             {
                 src: "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js",
                 integrity: "sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r",
@@ -64,13 +61,13 @@ export default {
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {},
     env: {
-        FIREBASE_API_KEY: "AIzaSyACuMBT6IFMu-bsg1dKbPyjr6BhoB2oCS4",
-        FIREBASE_AUTH_DOMAIN: "n2p-sandbox.firebaseapp.com",
-        FIREBASE_PROJECT_ID: "n2p-sandbox",
-        FIREBASE_STORAGE_BUCKET: "n2p-sandbox.appspot.com",
-        FIREBASE_MESSAGEING_SENDER_ID: "745257279549",
-        FIREBASE_APP_ID: "1:745257279549:web:2eafaba1bbb8f029110a54",
-        FIEBASE_MEASUREMENT_ID: "G-9QD7YNF3MK"
+        FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+        FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
+        FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+        FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
+        FIREBASE_MESSAGEING_SENDER_ID: process.env.FIREBASE_MESSAGEING_SENDER_ID,
+        FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
+        FIEBASE_MEASUREMENT_ID: process.env.FIEBASE_MEASUREMENT_ID,
     },
     plubicRuntimeConfig: {},
     privateRuntimeConfig: {

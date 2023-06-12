@@ -18,13 +18,26 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
     name: 'DefaultLayout',
     components: {
         HeaderBar: () => import('@/components/layouts/HeaderBar.vue'),
         LeftSiderBar: () => import('@/components/layouts/LeftSiderBar.vue'),
     },
-}
+
+    mounted() {
+        const reuslt = this.$store.getters['auth/user']
+        if (!reuslt) {
+            const getUserLocal = localStorage.getItem('user')
+            const praseUsr = getUserLocal ? JSON.parse(getUserLocal) : null
+            if (praseUsr) {
+                this.$store.dispatch('auth/setUser', praseUsr)
+            }
+        }
+    },
+})
 </script>
 
 <style scoped>

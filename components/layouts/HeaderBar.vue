@@ -3,8 +3,8 @@
         <a-row>
             <a-col span="12"> </a-col>
             <a-col span="12" class="d-flex justify-content-end align-items-center" style="height: 64px">
-                <h6 style="margin-right: 1rem">{{ user.displayName }}</h6>
-                <a-avatar style="margin-right: 2rem" :src="user.photoURL" :size="40" />
+                <h6 style="margin-right: 1rem">{{ currentUser.email }}</h6>
+                <a-avatar style="margin-right: 2rem" :src="currentUser.photoURL" :size="40" />
             </a-col>
         </a-row>
     </a-layout-header>
@@ -15,22 +15,13 @@ import Vue from 'vue'
 export default Vue.extend({
     name: 'HeaderBar',
     computed: {
-        user() {
-            if (process.client) {
-                const getuser = localStorage.getItem('user')
-                const user = getuser ? JSON.parse(getuser) : null
-                return {
-                    uid: user.uid || null,
-                    email: user.email || null,
-                    displayName: user.displayName || null,
-                    photoURL: user.photoURL || null,
-                }
-            }
+        currentUser() {
+            const user = this.$store.getters['auth/user']
             return {
-                uid: null,
-                email: null,
-                displayName: null,
-                photoURL: null,
+                uid: user?.uid,
+                email: user?.email,
+                displayName: user?.displayName,
+                photoURL: user?.photoURL,
             }
         },
     },
