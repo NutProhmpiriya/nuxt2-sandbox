@@ -5,11 +5,14 @@
             <a-tab-pane key="fireAuth" tab="Auth">
                 <FireAuth />
             </a-tab-pane>
-            <a-tab-pane key="fireStore" tab="Database" force-render>
+            <a-tab-pane key="fireStore" tab="FireStore" force-render>
                 <FireStore />
             </a-tab-pane>
             <a-tab-pane key="storeage" tab="Storeage">
                 <FireStorage />
+            </a-tab-pane>
+            <a-tab-pane key="realtimeDB" tab="RealTime DB">
+                <RealTimeDB />
             </a-tab-pane>
         </a-tabs>
     </div>
@@ -24,6 +27,7 @@ export default Vue.extend({
         FireAuth: () => import('@/components/firebase9-srv/FireAuth.vue'),
         FireStore: () => import('@/components/firebase9-srv/FireStore.vue'),
         FireStorage: () => import('@/components/firebase9-srv/FireStorage.vue'),
+        RealTimeDB: () => import('@/components/firebase9-srv/RealTimeDB.vue'),
     },
     data: () => ({
         section: 'fireAuth',

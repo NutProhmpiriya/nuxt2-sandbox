@@ -13,9 +13,9 @@
                 </a-button>
             </a-form-model-item>
         </a-form-model>
-
+        <pre>{{ dataFocus }}</pre>
         <!-- table getOne, updateOne -->
-        <a-table :columns="columns" :data-source="posts">
+        <a-table :role-key="(recode) => recode.id" :columns="columns" :data-source="posts">
             <template #operation="id">
                 <a href="javascript:;" @click="updatePost">Update</a>
                 <a-popconfirm title="Sure to delete ?" @confirm="() => deletePost(id)">
@@ -83,6 +83,7 @@ export default Vue.extend({
                 phone: '',
             },
             columns,
+            dataFocus: {} as Post,
         }
     },
 
@@ -94,6 +95,7 @@ export default Vue.extend({
 
     mounted() {
         this.findManyPost()
+        this.listenerDoc()
     },
 
     methods: {
@@ -107,9 +109,9 @@ export default Vue.extend({
                     owner: this.user.uid,
                 }
 
-                const { instanceDB, fireStore } = this.$fireV9
+                const { instanceFirestore, fireStore } = this.$fireV9
                 const { addDoc, collection } = fireStore
-                const docRef = await addDoc(collection(instanceDB, 'posts'), bodyData)
+                const docRef = await addDoc(collection(instanceFirestore, 'posts'), bodyData)
                     .then((docRef) => {
                         this.formCreate.content = ''
                         this.findManyPost()
@@ -135,9 +137,10 @@ export default Vue.extend({
 
         async findManyPost() {
             try {
-                const { instanceDB, fireStore } = this.$fireV9
+                const { instanceFirestore, fireStore } = this.$fireV9
                 const { collection, getDocs } = fireStore
-                const querySnapshot = await getDocs(collection(instanceDB, 'posts'))
+                const querySnapshot = await getDocs(collection(instanceFirestore, 'posts'))
+
                 this.posts = []
                 querySnapshot.forEach((doc) => {
                     const data = doc.data()
@@ -177,9 +180,9 @@ export default Vue.extend({
         deletePost(id: string) {
             try {
                 const h = this.$createElement
-                const { instanceDB, fireStore } = this.$fireV9
+                const { instanceFirestore, fireStore } = this.$fireV9
                 const { doc, deleteDoc } = fireStore
-                const docRef = doc(instanceDB, 'posts', id)
+                const docRef = doc(instanceFirestore, 'posts', id)
                 deleteDoc(docRef)
                     .then(() => {
                         this.$info({
@@ -194,6 +197,58 @@ export default Vue.extend({
             } catch (error: any) {
                 this.$error({
                     title: 'Delete Post',
+                    content: error.message,
+                })
+            }
+        },
+
+        async findOne(id = 'BAIj4UkhQHeuyGnZDC4h') {
+            try {
+                const { instanceFirestore, fireStore } = this.$fireV9
+                const { doc, getDoc } = fireStore
+                const docRef = doc(instanceFirestore, 'posts', id)
+                const docSnap = await getDoc(docRef)
+                if (docSnap.exists()) {
+                    return {
+                        id: docSnap.id,
+                        post: docSnap.data().post,
+                        content: docSnap.data().content,
+                        owner: docSnap.data().owner,
+                    }
+                } else {
+                    throw new Error('No such document!')
+                }
+            } catch (error: any) {
+                this.$error({
+                    title: 'Listener Doc',
+                    content: error.message,
+                })
+            }
+        },
+
+        listenerDoc() {
+            try {
+                const { instanceFirestore, fireStore } = this.$fireV9
+                const { doc, onSnapshot } = fireStore
+                const docRef = doc(instanceFirestore, 'posts', 'BAIj4UkhQHeuyGnZDC4h')
+                const unsub = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        this.dataFocus = {
+                            id: docSnap.id,
+                            post: docSnap.data().post,
+                            content: docSnap.data().content,
+                            owner: docSnap.data().owner,
+                        }
+                        if (this.dataFocus.post === 'update') {
+                            unsub()
+                        }
+                    } else {
+                        throw new Error('No such document!')
+                    }
+                })
+            } catch (error: any) {
+                this.$error({
+                    title: 'Listener Doc',
                     content: error.message,
                 })
             }
